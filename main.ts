@@ -31,11 +31,9 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorthWest1, fun
             . . 2 2 4 4 4 4 4 4 4 4 2 2 . . 
             . . . 2 2 4 4 4 4 4 2 2 2 . . . 
             `, SpriteKind.Projectile)
-        boom.setPosition(scene.cameraProperty(CameraProperty.X), scene.cameraProperty(CameraProperty.Y))
+        boom.setPosition(apple.x, apple.y)
         scene.cameraFollowSprite(boom)
         music.bigCrash.playUntilDone()
-        pause(1000)
-        game.over(false)
     } else {
         if (landingFlag == 0) {
             fuel += 100
@@ -43,6 +41,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.darkGroundNorthWest1, fun
         }
     }
     apple.setVelocity(0, -1)
+    gameoverflag = 1
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     angle += -15 * (3.14 / 180)
@@ -58,6 +57,9 @@ let angle = 0
 let fireball: Sprite = null
 let landingFlag = 0
 let rocketflag = 0
+let gameoverflag = 0
+tiles.setCurrentTilemap(tilemap`level2`)
+gameoverflag = 0
 let fuel = 1000
 let fuelSprite = textsprite.create(convertToText(fuel))
 rocketflag = 0
@@ -82,7 +84,6 @@ fireball = sprites.create(img`
     `, SpriteKind.Projectile)
 fireball.setFlag(SpriteFlag.Invisible, true)
 angle = 0
-tiles.setCurrentTilemap(tilemap`level2`)
 effects.clouds.startScreenEffect()
 apple = sprites.create(img`
     . . . . . . . e c 7 . . . . . . 
@@ -127,5 +128,11 @@ game.onUpdate(function () {
     }
     if (apple.y < 150) {
         landingFlag = 0
+    }
+    if (gameoverflag == 2) {
+        game.over(false)
+    }
+    if (gameoverflag) {
+        gameoverflag += 1
     }
 })
